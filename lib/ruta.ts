@@ -37,6 +37,11 @@ export function carrilPorOrigen(origen: Origen, reglas: ReglaOrigen[]): Carril {
   return reglas.find((r) => r.origen === origen)?.carril ?? "ue";
 }
 
+/** un borrador para un tercero lleva su nombre y su correo: siempre por la UE */
+export function carrilPara(accion: TipoAccion, origen: Origen, reglas: ReglaOrigen[]): Carril {
+  return accion === "borrador-tercero" ? "ue" : carrilPorOrigen(origen, reglas);
+}
+
 export function servicioPara(accion: TipoAccion, carril: Carril): ServicioId {
   if (accion === "archivar-factura") return "lectura-ue";
   if (accion === "buscar") return carril === "ue" ? "gpt-ue" : "busqueda";

@@ -6,7 +6,7 @@ import { ArrowDownUp, Ban, Check, Mail, MessageCircle, Monitor, Pause, Pencil, P
 import { Avatar, Aviso, Badge, Boton, Campo, Confirmar, Drawer, Modal, Paginacion, Skel, Vacio } from "@/components/ui";
 import { TONO_ESTADO } from "@/lib/estados";
 import { useStore } from "@/lib/store";
-import { ACCIONES, CARRILES, ORIGENES, SERVICIOS, carrilPorOrigen } from "@/lib/ruta";
+import { ACCIONES, CARRILES, ORIGENES, SERVICIOS, carrilPara } from "@/lib/ruta";
 import { PROYECTOS } from "@/lib/mock/estudio";
 import type { Canal, Carril, EstadoTarea, Origen, Tarea, TipoAccion } from "@/lib/types";
 import { cuandoFue, haceCuanto, norm } from "@/lib/format";
@@ -286,7 +286,7 @@ function Contenido() {
         )}
       </Drawer>
 
-      <NuevaTarea abierto={nueva} onCerrar={() => setNueva(false)} onCrear={async (d) => crearTarea(d)} reglasCarril={(o) => carrilPorOrigen(o, reglas)} />
+      <NuevaTarea abierto={nueva} onCerrar={() => setNueva(false)} onCrear={async (d) => crearTarea(d)} reglasCarril={(a, o) => carrilPara(a, o, reglas)} />
       <EditarTarea tarea={editar} onCerrar={() => setEditar(null)} onGuardar={async (d) => {
           if (editar) await editarTarea(editar.id, d);
         }} />
@@ -308,7 +308,7 @@ function Contenido() {
   );
 }
 
-function NuevaTarea({ abierto, onCerrar, onCrear, reglasCarril }: { abierto: boolean; onCerrar: () => void; onCrear: (d: { titulo: string; descripcion: string; proyecto: string; accion: TipoAccion; canal: Canal; origen: Origen }) => Promise<string>; reglasCarril: (o: Origen) => Carril }) {
+function NuevaTarea({ abierto, onCerrar, onCrear, reglasCarril }: { abierto: boolean; onCerrar: () => void; onCrear: (d: { titulo: string; descripcion: string; proyecto: string; accion: TipoAccion; canal: Canal; origen: Origen }) => Promise<string>; reglasCarril: (a: TipoAccion, o: Origen) => Carril }) {
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [proyecto, setProyecto] = useState(PROYECTOS[0]);
@@ -326,7 +326,7 @@ function NuevaTarea({ abierto, onCerrar, onCrear, reglasCarril }: { abierto: boo
     }
   }, [abierto]);
 
-  const carril = reglasCarril(origen);
+  const carril = reglasCarril(accion, origen);
   const guardar = async () => {
     if (titulo.trim().length < 4) return setError("Escriba qué tiene que hacer Sam.");
     setCargando(true);

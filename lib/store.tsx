@@ -6,7 +6,7 @@ import { crearContactos, crearInmuebles } from "./mock/estudio";
 import { crearFacturas, rutaArchivo } from "./mock/facturas";
 import { crearOperaciones, nuevaRef, tareasDeFacturas, tareasManuales } from "./mock/tareas";
 import { ULTIMO_WHATSAPP_HORAS, crearAutorizaciones, crearInstrucciones, crearMensajes } from "./mock/control";
-import { ACCIONES, CARRILES, ORIGENES, REGLAS_BASE, SERVICIOS, VERSION_INSTRUCCIONES, carrilPorOrigen, servicioPara } from "./ruta";
+import { ACCIONES, CARRILES, ORIGENES, REGLAS_BASE, SERVICIOS, VERSION_INSTRUCCIONES, carrilPara, servicioPara } from "./ruta";
 import { entender } from "./intencion";
 import { espera, eur, minus, pulso, uid } from "./format";
 import { ahora, iniciarReloj, iso } from "./reloj";
@@ -252,7 +252,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const crearTarea = useCallback<Ctx["crearTarea"]>(async (d) => {
     exigirMarcha();
     await latencia();
-    const carril = carrilPorOrigen(d.origen, ref.current.reglas);
+    const carril = carrilPara(d.accion, d.origen, ref.current.reglas);
     const servicio = servicioPara(d.accion, carril);
     const ref_ = nuevaRef();
     const id = "t-" + ref_;
@@ -483,7 +483,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }
     setEscribiendo(true);
     await espera(1100 + Math.random() * 700);
-    const carril = carrilPorOrigen(it.origen, ref.current.reglas);
+    const carril = carrilPara(it.accion, it.origen, ref.current.reglas);
     const servicio = servicioPara(it.accion, carril);
     const cambia = ACCIONES[it.accion].cambia;
     const ref_ = nuevaRef();
